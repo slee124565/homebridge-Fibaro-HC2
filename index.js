@@ -148,7 +148,10 @@ FibaroHC2Platform.prototype.HomeCenterDevices2HomeKitAccessories = function(devi
 	  var services = [];
 	  var service = null;
 	  var that = this;
+      that.log('that.grouping = ' + that.grouping);
 	  devices.map(function(s, i, a) {
+        if (s.id == 146)
+            that.log('device 146 found ' + s.name);
 		if (s.visible == true && s.name.charAt(0) != "_") {
 			if (that.grouping == "room") {         	
 				if (s.roomID != currentRoomID) {
@@ -201,7 +204,8 @@ FibaroHC2Platform.prototype.HomeCenterDevices2HomeKitAccessories = function(devi
 				service = {controlService: new Service.LockMechanism(s.name), characteristics: [Characteristic.LockCurrentState, Characteristic.LockTargetState]};
 			else if (s.type == "com.fibaro.thermostatDanfoss" || s.type == "com.fibaro.thermostatHorstmann")
 				service = {controlService: new Service.DanfossRadiatorThermostat(s.name), characteristics: [Characteristic.CurrentTemperature, Characteristic.TargetTemperature, Characteristic.TimeInterval]};
-			else if (s.type == "virtual_device") {
+			/*
+            else if (s.type == "virtual_device") {
 				var pushButtonServices = [];
 				var pushButtonService = null;
 				for (var r = 0; r < s.properties.rows.length; r++) {
@@ -217,8 +221,12 @@ FibaroHC2Platform.prototype.HomeCenterDevices2HomeKitAccessories = function(devi
 					} 
 				}
 				that.addAccessory(pushButtonServices, s.name, s.roomID, s.ID)
-			}
+			}*/
+            else 
+                that.log('Unhandle device type ' + s.type + ', id: ' + s.id)
 			if (service != null) {
+                if (s.id == 146)
+                    that.log('service: ' + JSON.stringify(service));
 				if (service.controlService.subtype == undefined)
 					service.controlService.subtype = "";
 				service.controlService.subtype = s.id + "--" + service.controlService.subtype; // "DEVICE_ID-VIRTUAL_BUTTON_ID-RGB_MARKER
